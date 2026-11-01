@@ -1,0 +1,749 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SignalFlow · Trading Signals</title>
+  <!-- Font Awesome 5 (icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #0b0e14 0%, #141a24 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      color: #eef2f6;
+    }
+
+    .card {
+      max-width: 1200px;
+      width: 100%;
+      background: rgba(20, 26, 34, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(72, 187, 255, 0.15);
+      border-radius: 2.5rem;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(0, 180, 255, 0.1) inset;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #ffffff 0%, #a0d0ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subhead {
+      font-size: 1rem;
+      color: #8b9bb5;
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-left: 3px solid #26d0ff;
+      padding-left: 1rem;
+      font-weight: 400;
+    }
+
+    .subhead i {
+      color: #26d0ff;
+      font-size: 1.2rem;
+    }
+
+    /* payment address banner */
+    .wallet-banner {
+      background: #0f131c;
+      border: 1px solid #2a3a4e;
+      border-radius: 1.5rem;
+      padding: 1.25rem 1.75rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .wallet-banner:hover {
+      border-color: #2f5f8a;
+    }
+
+    .wallet-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .wallet-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6d7f99;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .wallet-label i {
+      color: #26d0ff;
+    }
+
+    .wallet-address {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #c6e2ff;
+      word-break: break-all;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .copy-btn {
+      background: #1e2a3a;
+      border: none;
+      color: #b0c8e0;
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #2e4155;
+    }
+
+    .copy-btn:hover {
+      background: #2b3d54;
+      color: #ffffff;
+      border-color: #3e7ca8;
+    }
+
+    .copy-btn i {
+      font-size: 0.8rem;
+    }
+
+    .network-tag {
+      background: #19232e;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #9bb9dd;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid #2a3c50;
+    }
+
+    .network-tag i {
+      color: #26d0ff;
+    }
+
+    /* plans */
+    .plans-title {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #d6e5ff;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .plans-title i {
+      color: #26d0ff;
+    }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .plan-card {
+      background: #11171f;
+      border: 1.5px solid #232e3c;
+      border-radius: 2rem;
+      padding: 1.8rem 1.5rem;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    .plan-card:hover {
+      border-color: #3a5e7c;
+      transform: translateY(-4px);
+      background: #131b26;
+      box-shadow: 0 20px 30px -12px #00000080, 0 0 0 1px #1d3e5e inset;
+    }
+
+    .plan-card.selected {
+      border-color: #26d0ff;
+      background: #0f1a24;
+      box-shadow: 0 0 0 1px #26d0ff, 0 15px 30px -12px #26d0ff60;
+    }
+
+    .plan-card.selected::before {
+      content: "✓ SELECTED";
+      position: absolute;
+      top: -0.8rem;
+      right: 1.5rem;
+      background: #26d0ff;
+      color: #0a0e14;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.25rem 0.9rem;
+      border-radius: 2rem;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 10px #26d0ff60;
+    }
+
+    .plan-name {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #a9c1dd;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .plan-name i {
+      color: #26d0ff;
+      font-size: 1.2rem;
+    }
+
+    .plan-signals {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 0.35rem;
+    }
+
+    .plan-signals span {
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: #7b8ea8;
+      margin-left: 0.3rem;
+    }
+
+    .plan-price {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #ebf5ff;
+      display: flex;
+      align-items: baseline;
+      gap: 0.25rem;
+      margin: 0.75rem 0 1rem;
+    }
+
+    .plan-price small {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #7f96b3;
+    }
+
+    .plan-desc {
+      font-size: 0.9rem;
+      color: #92a6c2;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+      border-top: 1px solid #1e2a36;
+      padding-top: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .plan-desc i {
+      color: #26d0ff;
+      font-size: 0.9rem;
+    }
+
+    .select-indicator {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #7b93b0;
+      border-top: 1px solid #1e2b38;
+      padding-top: 1rem;
+    }
+
+    .plan-card.selected .select-indicator {
+      color: #26d0ff;
+    }
+
+    .radio-circle {
+      width: 1.2rem;
+      height: 1.2rem;
+      border-radius: 50%;
+      border: 2px solid #344c64;
+      display: inline-block;
+      position: relative;
+      transition: all 0.15s;
+    }
+
+    .plan-card.selected .radio-circle {
+      border-color: #26d0ff;
+      background: #26d0ff;
+      box-shadow: 0 0 0 3px #26d0ff30;
+    }
+
+    .plan-card.selected .radio-circle::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 0.45rem;
+      height: 0.45rem;
+      background: #0b1119;
+      border-radius: 50%;
+    }
+
+    /* action panel */
+    .action-panel {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #1e2a38;
+    }
+
+    .selected-summary {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: #0d141e;
+      padding: 0.75rem 1.5rem;
+      border-radius: 3rem;
+      border: 1px solid #263544;
+    }
+
+    .selected-summary i {
+      color: #26d0ff;
+      font-size: 1.2rem;
+    }
+
+    .selected-summary .summary-text {
+      font-size: 1rem;
+      color: #b6cee9;
+    }
+
+    .selected-summary .summary-text strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .pay-btn {
+      background: linear-gradient(135deg, #1a5f9c 0%, #0e3b63 100%);
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 0.9rem 2.8rem;
+      border-radius: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 10px 20px -8px #0b2f4e, 0 0 0 1px #3879b3 inset;
+      letter-spacing: 0.3px;
+    }
+
+    .pay-btn i {
+      font-size: 1.2rem;
+    }
+
+    .pay-btn:hover {
+      background: linear-gradient(135deg, #2173b8 0%, #124a7a 100%);
+      transform: scale(1.02);
+      box-shadow: 0 15px 25px -8px #0d3f66, 0 0 0 1px #5ea0e0 inset;
+    }
+
+    .pay-btn:active {
+      transform: scale(0.98);
+    }
+
+    .pay-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* toast / notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e2e40;
+      color: white;
+      padding: 0.9rem 2rem;
+      border-radius: 3rem;
+      border-left: 5px solid #26d0ff;
+      box-shadow: 0 20px 40px -10px #000000cc;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      opacity: 0;
+      transition: all 0.35s ease;
+      pointer-events: none;
+      z-index: 1000;
+      backdrop-filter: blur(8px);
+      border: 1px solid #2a4763;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast i {
+      color: #26d0ff;
+      font-size: 1.2rem;
+    }
+
+    .footer-note {
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      color: #586d84;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border-top: 1px solid #1b242f;
+      padding-top: 1.8rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-note i {
+      color: #26d0ff;
+    }
+
+    /* responsive */
+    @media (max-width: 640px) {
+      body {
+        padding: 0.8rem;
+      }
+
+      .card {
+        padding: 1.5rem 1rem;
+        border-radius: 1.8rem;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .wallet-address {
+        font-size: 0.9rem;
+      }
+
+      .plan-price {
+        font-size: 1.8rem;
+      }
+
+      .plans-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .action-panel {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .pay-btn {
+        justify-content: center;
+        padding: 0.9rem 1.5rem;
+      }
+
+      .selected-summary {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>
+      <i class="fas fa-bolt" style="background: linear-gradient(135deg, #26d0ff, #3a8bdf); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+      SignalFlow
+    </h1>
+    <div class="subhead">
+      <i class="fas fa-chart-line"></i> Premium trading signals · Pay with USDT (TRC20)
+    </div>
+
+    <!-- USDT wallet address -->
+    <div class="wallet-banner">
+      <div class="wallet-info">
+        <div class="wallet-label">
+          <i class="fas fa-wallet"></i> USDT TRC20 address
+        </div>
+        <div class="wallet-address">
+          <span id="walletAddress">THX7aZumSYBwB7oRRzA7X7MuNRcX8kF6dd</span>
+          <button class="copy-btn" id="copyWalletBtn">
+            <i class="fas fa-copy"></i> Copy
+          </button>
+        </div>
+      </div>
+      <div class="network-tag">
+        <i class="fas fa-network-wired"></i> TRON (TRC20)
+      </div>
+    </div>
+
+    <!-- Plans -->
+    <div class="plans-title">
+      <i class="fas fa-tags"></i> Choose your signal plan
+    </div>
+
+    <div class="plans-grid" id="plansGrid">
+      <!-- plan 1 -->
+      <div class="plan-card" data-plan="basic" data-price="30" data-signals="1">
+        <div class="plan-name">
+          <i class="fas fa-seedling"></i> Starter
+        </div>
+        <div class="plan-signals">1 <span>signal / day</span></div>
+        <div class="plan-price">$30 <small>USDT</small></div>
+        <div class="plan-desc">
+          <i class="fas fa-check-circle"></i> Single daily signal
+        </div>
+        <div class="select-indicator">
+          <span>Select plan</span>
+          <span class="radio-circle"></span>
+        </div>
+      </div>
+
+      <!-- plan 2 -->
+      <div class="plan-card" data-plan="standard" data-price="50" data-signals="2">
+        <div class="plan-name">
+          <i class="fas fa-rocket"></i> Standard
+        </div>
+        <div class="plan-signals">2 <span>signals / day</span></div>
+        <div class="plan-price">$50 <small>USDT</small></div>
+        <div class="plan-desc">
+          <i class="fas fa-check-circle"></i> Two daily signals
+        </div>
+        <div class="select-indicator">
+          <span>Select plan</span>
+          <span class="radio-circle"></span>
+        </div>
+      </div>
+
+      <!-- plan 3 -->
+      <div class="plan-card" data-plan="pro" data-price="100" data-signals="3">
+        <div class="plan-name">
+          <i class="fas fa-crown"></i> Pro
+        </div>
+        <div class="plan-signals">3 <span>signals / day</span></div>
+        <div class="plan-price">$100 <small>USDT</small></div>
+        <div class="plan-desc">
+          <i class="fas fa-check-circle"></i> Three daily signals
+        </div>
+        <div class="select-indicator">
+          <span>Select plan</span>
+          <span class="radio-circle"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action area -->
+    <div class="action-panel">
+      <div class="selected-summary" id="selectedSummary">
+        <i class="fas fa-receipt"></i>
+        <span class="summary-text" id="summaryText">No plan selected</span>
+      </div>
+      <button class="pay-btn" id="payButton" disabled>
+        <i class="fas fa-arrow-right"></i> Pay with USDT
+      </button>
+    </div>
+
+    <div class="footer-note">
+      <i class="fas fa-shield-alt"></i> Send exact amount to the TRC20 address above. Signals activate after 1 confirmation.
+    </div>
+  </div>
+
+  <!-- toast -->
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMessage">Copied to clipboard</span>
+  </div>
+
+  <script>
+    (function() {
+      // DOM elements
+      const planCards = document.querySelectorAll('.plan-card');
+      const summaryText = document.getElementById('summaryText');
+      const payButton = document.getElementById('payButton');
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      const copyBtn = document.getElementById('copyWalletBtn');
+      const walletSpan = document.getElementById('walletAddress');
+
+      // State
+      let selectedPlan = null; // { plan, price, signals }
+
+      // Show toast helper
+      function showToast(message, icon = 'fa-check-circle') {
+        toastMessage.textContent = message;
+        // update icon
+        const iconEl = toast.querySelector('i');
+        if (iconEl) {
+          iconEl.className = `fas ${icon}`;
+        }
+        toast.classList.add('show');
+        clearTimeout(window.toastTimer);
+        window.toastTimer = setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2800);
+      }
+
+      // Copy wallet address
+      copyBtn.addEventListener('click', async () => {
+        const address = walletSpan.textContent.trim();
+        try {
+          await navigator.clipboard.writeText(address);
+          showToast('USDT address copied!', 'fa-copy');
+        } catch (err) {
+          // fallback
+          const textArea = document.createElement('textarea');
+          textArea.value = address;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          showToast('USDT address copied!', 'fa-copy');
+        }
+      });
+
+      // Remove 'selected' class from all plans
+      function clearSelected() {
+        planCards.forEach(card => card.classList.remove('selected'));
+      }
+
+      // Update UI based on selection
+      function updateSelection(planData) {
+        if (!planData) {
+          summaryText.textContent = 'No plan selected';
+          payButton.disabled = true;
+          return;
+        }
+
+        const signalWord = planData.signals === 1 ? 'signal' : 'signals';
+        summaryText.innerHTML = `<strong>${planData.signals} ${signalWord}/day</strong> · $${planData.price} USDT`;
+        payButton.disabled = false;
+      }
+
+      // Handle plan card click
+      planCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+          // Avoid triggering if clicking a button inside (none currently, but safe)
+          const plan = card.dataset.plan;
+          const price = parseFloat(card.dataset.price);
+          const signals = parseInt(card.dataset.signals, 10);
+
+          // If same card is clicked again, we still keep it selected (no toggle off)
+          // But we can allow deselect if desired; UI typically keeps one selected.
+          // For better UX, we allow re-selection but don't deselect.
+          // We'll just re-apply selection.
+
+          // Update selected state in UI
+          clearSelected();
+          card.classList.add('selected');
+
+          // Store selected plan
+          selectedPlan = { plan, price, signals };
+
+          // Update summary + button
+          updateSelection(selectedPlan);
+        });
+      });
+
+      // Pay button action
+      payButton.addEventListener('click', () => {
+        if (!selectedPlan) {
+          showToast('Please select a signal plan first.', 'fa-exclamation-circle');
+          return;
+        }
+
+        const { signals, price } = selectedPlan;
+        const signalWord = signals === 1 ? 'signal' : 'signals';
+
+        // simulate payment instruction - realistic message
+        const message = `Send exactly $${price} USDT (TRC20) to the wallet address. You'll receive ${signals} ${signalWord} per day.`;
+        showToast(message, 'fa-paper-plane');
+
+        // Optional: scroll to wallet address for visual cue
+        document.querySelector('.wallet-banner').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+
+      // Initialize: no plan selected, disable button
+      updateSelection(null);
+
+      // Edge: if a user clicks the already selected plan, we can keep it.
+      // Also auto-select first plan? No, better to require choice.
+
+      // Add small interaction: if user clicks on copy button inside wallet, it's already handled.
+
+      // Extra: keyboard accessibility for plan cards (make them focusable)
+      planCards.forEach(card => {
+        card.setAttribute('tabindex', '0');
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            card.click();
+          }
+        });
+      });
+
+      // Initial toast example not needed; all good.
+
+      // Ensure any click on plan card inside selected summary isn't affected.
+      // Also if user clicks the same plan, we don't deselect; but we can if we want.
+      // We'll keep re-selecting same plan.
+    })();
+  </script>
+</body>
+</html>
